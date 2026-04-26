@@ -14,10 +14,10 @@ config:
 services:
   rediscache:
     type: redis
-  mailhog:
-    type: mailhog
+  mailpit:
+    type: mailpit
     portforward: false
-    hogfrom:
+    mailfrom:
       - appserver
   appserver:
     overrides:
