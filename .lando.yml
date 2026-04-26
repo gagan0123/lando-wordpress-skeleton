@@ -52,8 +52,12 @@ services:
         - './themes:/app/wordpress/wp-content/themes'
         - './uploads:/app/wordpress/wp-content/uploads'
     build_as_root:
-      - curl -sL https://deb.nodesource.com/setup_14.x | bash -
-      - apt-get install -y nodejs
+      - | # Install Node.js 22 (current LTS) using the modern signed-keyring method.
+        apt-get update && apt-get install -y ca-certificates curl gnupg
+        mkdir -p /etc/apt/keyrings
+        curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
+        apt-get update && apt-get install -y nodejs
     build:
       - wp core download --force --skip-content
     run:
