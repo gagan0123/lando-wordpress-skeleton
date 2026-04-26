@@ -7,6 +7,7 @@ config:
   database: mariadb
   # Keep it empty, to enable xdebug use `lando xdebug <xdebug mode>` instead
   xdebug: ""
+  composer_version: "2"
   config:
     php: .lando/php.ini
     database: .lando/mysql.cnf
@@ -22,7 +23,7 @@ services:
   appserver:
     overrides:
       environment:
-        # Support debugging Drush with XDEBUG.
+        # Support debugging with XDEBUG.
         PHP_IDE_CONFIG: "serverName=appserver"
         PROFILER_OUTPUT_DIR: "profiler-output" # If changing this value, change in .gitignore also
       volumes:
@@ -42,8 +43,8 @@ services:
     build:
       - wp core download --force --skip-content
     run:
-      - sleep 5 # For some reason, we have to wait at least a second till database is up.
-      - | # Create WordPress config file and add necessary constants and custom config
+      - sleep 5 # Wait for the database service to be ready.
+      - | # Create WordPress config file and add necessary constants and custom config.
         wp config create --dbhost=database --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbprefix=wp_ --force --extra-php <<PHP
         if ( file_exists( __DIR__ . '/wp-content/rt-config/rt-config.php' ) ) {
           require_once( __DIR__ . '/wp-content/rt-config/rt-config.php' );
