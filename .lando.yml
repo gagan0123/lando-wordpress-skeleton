@@ -57,15 +57,19 @@ services:
       - wp config set DISALLOW_FILE_EDIT true --raw
       - wp config set WP_ENVIRONMENT_TYPE 'local'
       - wp config set WP_REDIS_HOST rediscache
-      - | # Let's check if WordPress is not installed, then install it
+      - | # Install WordPress if it is not already installed.
         if ! wp core is-installed; then
+          ADMIN_PASSWORD=$(openssl rand -base64 16 | tr -dc 'A-Za-z0-9' | head -c 20)
           wp core install --url=https://$LANDO_APP_NAME.$LANDO_DOMAIN \
             --title=$LANDO_APP_NAME \
             --admin_user=rtcamp \
-            --admin_password=goodwork \
+            --admin_password="$ADMIN_PASSWORD" \
             --admin_email=lando@rtcamp.com \
             --skip-email
-          wp theme install --activate twentytwentyone
+          echo "=========================================="
+          echo "WordPress admin password: $ADMIN_PASSWORD"
+          echo "=========================================="
+          wp theme install --activate twentytwentyfive
           wp plugin install --activate redis-cache
           wp redis enable
         fi
