@@ -4,7 +4,8 @@ config:
   via: nginx
   php: "8.2"
   webroot: wordpress
-  database: mariadb
+  # Pinned to avoid Lando's legacy default (10.3) and keep environments reproducible across machines.
+  database: mariadb:10.11
   # Keep it empty, to enable xdebug use `lando xdebug <xdebug mode>` instead
   xdebug: ""
   composer_version: "2"
