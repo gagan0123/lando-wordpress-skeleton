@@ -4,6 +4,36 @@
 
 ![WordPress-Skeleton Template for repo creation](https://user-images.githubusercontent.com/25586785/70203131-efb2b180-1741-11ea-9bb4-3e7790bf3832.png)
 
+## Setting up the Lando local environment
+
+`.lando.yml` is shared by every developer, so after creating a repo from the skeleton:
+
+1. Change `name:` to the project slug. The name keys the container names, the database volume and the `*.lndo.site` hostname, so two checkouts sharing a name share one database. Update the `proxy:` hostname for Mailpit and the `WP_REDIS_PREFIX` environment value to match.
+2. Review the pinned versions: `php`, `database`, `WP_VERSION` and the Node.js major in `build_as_root`. Match production where it exists.
+3. Run `lando start`. The first run prints a generated admin password for the `rtcamp` user. To use a fixed password instead, create a gitignored `.lando.local.yml`:
+
+   ```yaml
+   services:
+     appserver:
+       overrides:
+         environment:
+           WP_ADMIN_PASSWORD: your-local-password
+   ```
+
+   Reset it later with `lando wp user update rtcamp --user_pass=<new>`.
+
+Useful commands:
+
+| Command | Purpose |
+|---|---|
+| `lando wp ...` | WP-CLI inside the appserver |
+| `lando phpcs` / `lando phpcbf` | PHP_CodeSniffer with the repo `phpcs.xml` |
+| `lando xdebug <mode>` | Toggle Xdebug (`debug`, `profile`, `off`, ...) without a rebuild |
+| `lando db-import <file>` | Import a dump; `post-db-import` events flush caches and rewrites |
+| `lando npm ...` / `lando node ...` | Node.js inside the appserver |
+
+Mailpit catches all outgoing mail at `https://<name>-mail.lndo.site`. Uploads missing locally return 404; to pull them from production instead, edit the `@prod_uploads` block in `.lando/nginx.conf`.
+
 ## Adding description and what to add in it
 
 GitHub repo description should have a short brief about the repo and site url if applicable.

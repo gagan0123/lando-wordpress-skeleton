@@ -19,3 +19,18 @@ node_modules/
 
 # Profiler snapshot directory
 /profiler-output
+# Lando / WP-CLI per-developer overrides
+.lando.local.yml
+wp-cli.local.yml
+.env
+
+# Database dumps
+*.sql
+*.sql.gz
+
+# Placeholder files extracted from the WordPress core zip
+/plugins/index.php
+/themes/index.php
+
+# Local scratch
+/.tmp
